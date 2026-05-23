@@ -44,7 +44,7 @@ services:
       - "--entrypoints.websecure.address=:443"
       - "--certificatesresolvers.letsencrypt.acme.httpchallenge=true"
       - "--certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web"
-      - "--certificatesresolvers.letsencrypt.acme.email=luanlee1997@gmail.com"
+      - "--certificatesresolvers.letsencrypt.acme.email=duyluan0607@gmail.com"
       - "--certificatesresolvers.letsencrypt.acme.storage=/acme.json"
     restart: unless-stopped
   simple-webapp-flask:
