@@ -1,0 +1,32 @@
+services:
+  traefik:
+    image: traefik:latest
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./acme.json:/acme.json
+    command:
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+      - "--entrypoints.websecure.address=:443"
+      - "--certificatesresolvers.letsencrypt.acme.httpchallenge=true"
+      - "--certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web"
+      - "--certificatesresolvers.letsencrypt.acme.email=luanlee1997@gmail.com"
+      - "--certificatesresolvers.letsencrypt.acme.storage=/acme.json"
+    restart: unless-stopped
+  simple-webapp-flask:
+    build:
+      context: .
+    expose:
+      - "8080"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.simple-webapp-flask.rule=Host(`__DOMAIN__`)"
+      - "traefik.http.routers.simple-webapp-flask.entrypoints=websecure"
+      - "traefik.http.routers.simple-webapp-flask.tls.certresolver=letsencrypt"
+      - "traefik.http.services.simple-webapp-flask.loadbalancer.server.port=8080"
+    restart: unless-stopped
